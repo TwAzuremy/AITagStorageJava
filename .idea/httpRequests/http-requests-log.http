@@ -1,0 +1,6 @@
+POST http://localhost:8080/getData?table=templates
+
+<> 2022-12-14T180935.200.txt
+
+###
+

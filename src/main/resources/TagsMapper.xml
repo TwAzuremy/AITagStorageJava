@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.aitagstorage.mapper.TagsMapper">
+    <select id="getTags" parameterType="java.lang.String" resultType="Tags">
+        select id, title, front, reverse, remark, preImg
+        from ${table};
+    </select>
+
+    <insert id="addTags" parameterType="Tags">
+        insert into ${tags.table} (title, front, reverse, remark, preImg)
+        values (#{tags.title}, #{tags.front}, #{tags.reverse}, #{tags.remark}, #{tags.preImg});
+    </insert>
+
+    <delete id="delTags">
+        delete
+        from ${table}
+        where id = ${tagId};
+    </delete>
+
+    <select id="fuzzySearch" resultType="java.lang.String">
+        select title
+        from ${table}
+        <where>
+            <if test="mode == 'title'.toString()">
+                and title like "%${fuzzy}%";
+            </if>
+            <if test="mode == 'tags'.toString()">
+                and front like "%${fuzzy}%"
+                or reverse like "%${fuzzy}%";
+            </if>
+        </where>
+    </select>
+
+    <insert id="bulkAdd" parameterType="Tags">
+        insert into ${tags.table} (title, front, reverse, remark)
+        values (#{tags.title}, #{tags.front}, #{tags.reverse}, #{tags.remark});
+    </insert>
+
+    <select id="getTables" resultType="java.lang.Integer">
+        select count(*)
+        from information_schema.TABLES
+        where TABLE_SCHEMA = 'tags';
+    </select>
+
+    <select id="getPreImg" resultType="java.lang.String">
+        select preImg
+        from ${table}
+        where id = ${id};
+    </select>
+
+    <select id="getConfig" resultType="java.lang.String">
+        select value
+        from config
+        where `key` = '${key}';
+    </select>
+
+    <update id="setConfig" parameterType="java.lang.Integer">
+        update config
+        set value = '${value}'
+        where `key` = '${key}';
+    </update>
+</mapper>
